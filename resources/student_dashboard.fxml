@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="StudentController">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="0" prefWidth="200">
+
+            <!-- Student name area -->
+            <VBox styleClass="sidebar-name-area" spacing="4">
+                <Label fx:id="sidebarNameLabel"
+                       text="Student Name"
+                       styleClass="sidebar-name"/>
+                <Label fx:id="sidebarRoomLabel"
+                       text="Room ---"
+                       styleClass="sidebar-room"/>
+            </VBox>
+
+            <!-- Navigation buttons -->
+            <Button fx:id="btnHome"
+                    text="  Home"
+                    onAction="#showHome"
+                    styleClass="sidebar-btn,sidebar-btn-active"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="btnLogUsage"
+                    text="  Log Usage"
+                    onAction="#showLogUsage"
+                    styleClass="sidebar-btn"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="btnMyUsage"
+                    text="  My Usage"
+                    onAction="#showMyUsage"
+                    styleClass="sidebar-btn"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="btnMyBill"
+                    text="  My Bill"
+                    onAction="#showMyBill"
+                    styleClass="sidebar-btn"
+                    maxWidth="Infinity"/>
+
+            <Button fx:id="btnLogout"
+                    text="  Logout"
+                    onAction="#handleLogout"
+                    styleClass="sidebar-btn,sidebar-logout"
+                    maxWidth="Infinity"/>
+
+        </VBox>
+    </left>
+
+    <!-- RIGHT CONTENT — StackPane holds all 4 screens -->
+    <center>
+        <StackPane fx:id="contentArea">
+
+            <!-- SCREEN 1: HOME -->
+            <VBox fx:id="homeScreen"
+                  styleClass="screen-container"
+                  spacing="16">
+
+                <Label fx:id="welcomeLabel"
+                       text="Welcome!"
+                       styleClass="screen-title"/>
+
+                <!-- 4 Summary Cards -->
+                <HBox spacing="15">
+                    <VBox styleClass="card,card-blue" spacing="6">
+                        <Label text="Today's Usage" styleClass="card-title"/>
+                        <Label fx:id="todayUnitsLabel"
+                               text="0.0 Units"
+                               styleClass="card-value"/>
+                    </VBox>
+                    <VBox styleClass="card,card-green" spacing="6">
+                        <Label text="This Month"    styleClass="card-title"/>
+                        <Label fx:id="monthUnitsLabel"
+                               text="0.0 Units"
+                               styleClass="card-value"/>
+                    </VBox>
+                    <VBox styleClass="card,card-yellow" spacing="6">
+                        <Label text="Current Bill"  styleClass="card-title"/>
+                        <Label fx:id="currentBillLabel"
+                               text="Rs.0.00"
+                               styleClass="card-value"/>
+                    </VBox>
+                    <VBox styleClass="card,card-purple" spacing="6">
+                        <Label text="Days Logged"   styleClass="card-title"/>
+                        <Label fx:id="daysLoggedLabel"
+                               text="0 Days"
+                               styleClass="card-value"/>
+                    </VBox>
+                </HBox>
+
+                <Label text="Recent Usage History" styleClass="section-title"/>
+
+                <!-- Usage History Table -->
+                <TableView fx:id="usageTable"
+                           styleClass="data-table"
+                           VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colDate"
+                                     text="Date"
+                                     prefWidth="110"/>
+                        <TableColumn fx:id="colAppliance"
+                                     text="Appliance"
+                                     prefWidth="160"/>
+                        <TableColumn fx:id="colHours"
+                                     text="Hours Used"
+                                     prefWidth="120"/>
+                        <TableColumn fx:id="colUnits"
+                                     text="Units Consumed"
+                                     prefWidth="150"/>
+                    </columns>
+                </TableView>
+
+            </VBox>
+
+            <!-- SCREEN 2: LOG USAGE -->
+            <VBox fx:id="logUsageScreen"
+                  styleClass="screen-container"
+                  spacing="20"
+                  visible="false">
+
+                <Label text="Log Today's Appliance Usage"
+                       styleClass="screen-title"/>
+
+                <!-- Form -->
+                <VBox styleClass="form-box" spacing="16">
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text="Date:"
+                               styleClass="form-label"
+                               prefWidth="160"/>
+                        <TextField fx:id="logDateField"
+                                   text="01-Apr-2025"
+                                   styleClass="form-input"
+                                   prefWidth="260"/>
+                    </HBox>
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text="Select Appliance:"
+                               styleClass="form-label"
+                               prefWidth="160"/>
+                        <ComboBox fx:id="applianceCombo"
+                                  styleClass="form-input"
+                                  prefWidth="260"/>
+                    </HBox>
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text="Hours Used:"
+                               styleClass="form-label"
+                               prefWidth="160"/>
+                        <TextField fx:id="hoursField"
+                                   promptText="e.g. 4 or 6.5"
+                                   styleClass="form-input"
+                                   prefWidth="260"/>
+                    </HBox>
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text=""
+                               prefWidth="160"/>
+                        <Label fx:id="estimatedUnitsLabel"
+                               text="Estimated Units: 0.00"
+                               styleClass="estimated-label"/>
+                    </HBox>
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text=""
+                               prefWidth="160"/>
+                        <Button text="ADD LOG"
+                                onAction="#handleAddLog"
+                                styleClass="primary-btn"/>
+                    </HBox>
+
+                    <HBox spacing="20" styleClass="form-row">
+                        <Label text=""
+                               prefWidth="160"/>
+                        <Label fx:id="logStatusLabel"
+                               text=""
+                               styleClass="success-label"/>
+                    </HBox>
+
+                </VBox>
+
+            </VBox>
+
+            <!-- SCREEN 3: MY USAGE (chart placeholder) -->
+            <VBox fx:id="myUsageScreen"
+                  styleClass="screen-container"
+                  spacing="16"
+                  visible="false">
+
+                <Label text="My Monthly Usage"
+                       styleClass="screen-title"/>
+
+                <!-- Chart area — we draw here from controller -->
+                <javafx.scene.canvas.Canvas
+                    fx:id="usageCanvas"
+                    width="620"
+                    height="340"/>
+
+            </VBox>
+
+            <!-- SCREEN 4: MY BILL -->
+            <VBox fx:id="myBillScreen"
+                  styleClass="screen-container"
+                  spacing="16"
+                  visible="false">
+
+                <Label text="My Electricity Bill — April 2025"
+                       styleClass="screen-title"/>
+
+                <!-- Usage Summary Box -->
+                <VBox styleClass="bill-box" spacing="10">
+                    <Label text="Usage Summary"
+                           styleClass="bill-box-title"/>
+                    <Label fx:id="billTotalUnits"
+                           text="Total Units This Month:   0.0 units"
+                           styleClass="bill-row-text"/>
+                    <Label text="Billing Period:   01 Apr – 30 Apr 2025"
+                           styleClass="bill-row-text"/>
+                    <Label fx:id="billRoomLabel"
+                           text="Room Number:   ---"
+                           styleClass="bill-row-text"/>
+                </VBox>
+
+                <!-- Slab Calculation Box -->
+                <VBox styleClass="bill-box" spacing="10">
+                    <Label text="Slab Calculation"
+                           styleClass="bill-box-title"/>
+                    <Label fx:id="billUsageCharge"
+                           text="Usage Charge:   Rs.0.00"
+                           styleClass="bill-row-text"/>
+                    <Label text="Fixed Meter Charge:   Rs.50.00"
+                           styleClass="bill-row-text"/>
+                    <Label fx:id="billTotalLabel"
+                           text="Total Bill:   Rs.0.00"
+                           styleClass="bill-row-bold"/>
+                </VBox>
+
+                <!-- Total Payable Green Box -->
+                <HBox styleClass="bill-total-box">
+                    <Label text="Total Amount Payable:"
+                           styleClass="bill-total-text"
+                           HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="billPayableLabel"
+                           text="Rs.0.00"
+                           styleClass="bill-total-amount"/>
+                </HBox>
+
+                <!-- Download Button -->
+                <Button text="Download Bill"
+                        onAction="#handleDownloadBill"
+                        styleClass="primary-btn"/>
+
+            </VBox>
+
+        </StackPane>
+    </center>
+
+</BorderPane>
