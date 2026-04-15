@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="AdminController">
+
+    <!-- Top Title -->
+    <top>
+        <Label fx:id="adminTitleLabel"
+               text="Admin Panel"
+               style="-fx-font-size: 18px; -fx-padding: 10;" />
+    </top>
+
+    <!-- Center Table -->
+    <center>
+        <TableView fx:id="adminTable">
+            <columns>
+                <TableColumn fx:id="colName" text="Name" prefWidth="120"/>
+                <TableColumn fx:id="colRoom" text="Room" prefWidth="80"/>
+                <TableColumn fx:id="colUser" text="Username" prefWidth="120"/>
+                <TableColumn fx:id="colUnits" text="Units" prefWidth="100"/>
+                <TableColumn fx:id="colBill" text="Bill" prefWidth="100"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <!-- Bottom Buttons -->
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <Button text="Refresh" onAction="#handleRefresh"/>
+            <Button text="Export Report" onAction="#handleExport"/>
+            <Button text="Logout" onAction="#handleLogout"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

@@ -21,13 +21,13 @@ import java.util.Optional;
 public class AdminController {
 
     @FXML private Label adminTitleLabel;
-    @FXML private TableView adminTable;
-    @FXML private TableColumn colName;
-    @FXML private TableColumn colRoom;
-    @FXML private TableColumn colUser;
-    @FXML private TableColumn colUnits;
-    @FXML private TableColumn colBill;
-    @FXML private TableColumn colStatus;
+    @FXML private TableView<AdminRowData> adminTable;
+    @FXML private TableColumn<AdminRowData, String> colName;
+    @FXML private TableColumn<AdminRowData, String> colRoom;
+    @FXML private TableColumn<AdminRowData, String> colUser;
+    @FXML private TableColumn<AdminRowData, String> colUnits;
+    @FXML private TableColumn<AdminRowData, String> colBill;
+    @FXML private TableColumn<AdminRowData, String> colStatus;
 
     private Admin currentAdmin;
     private LoginManager loginManager;
@@ -35,12 +35,10 @@ public class AdminController {
 
     // Called from LoginController
     public void initData(Admin admin, LoginManager lm) {
-        this.currentAdmin   = admin;
-        this.loginManager   = lm;
+        this.currentAdmin = admin;
+        this.loginManager = lm;
 
-        adminTitleLabel.setText(
-            "Admin Panel — " + admin.getAdminName()
-        );
+        adminTitleLabel.setText("Admin Panel — " + admin.getAdminName());
 
         setupTable();
         loadStudentData();
@@ -49,18 +47,12 @@ public class AdminController {
     private void setupTable() {
         tableData = FXCollections.observableArrayList();
 
-        colName.setCellValueFactory(
-            new PropertyValueFactory<>("name"));
-        colRoom.setCellValueFactory(
-            new PropertyValueFactory<>("room"));
-        colUser.setCellValueFactory(
-            new PropertyValueFactory<>("username"));
-        colUnits.setCellValueFactory(
-            new PropertyValueFactory<>("units"));
-        colBill.setCellValueFactory(
-            new PropertyValueFactory<>("bill"));
-        colStatus.setCellValueFactory(
-            new PropertyValueFactory<>("status"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colRoom.setCellValueFactory(new PropertyValueFactory<>("room"));
+        colUser.setCellValueFactory(new PropertyValueFactory<>("username"));
+        colUnits.setCellValueFactory(new PropertyValueFactory<>("units"));
+        colBill.setCellValueFactory(new PropertyValueFactory<>("bill"));
+        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         adminTable.setItems(tableData);
     }
@@ -71,10 +63,9 @@ public class AdminController {
 
         for (int i = 0; i < allStudents.size(); i++) {
             Student s = allStudents.get(i);
-            ArrayList<UsageLog> logs =
-                FileHandler.loadUsageLogs(s.getUsername());
+            ArrayList<UsageLog> logs = FileHandler.loadUsageLogs(s.getUsername());
             double totalUnits = BillCalculator.calculateTotalUnits(logs);
-            double totalBill  = BillCalculator.calculateBill(totalUnits);
+            double totalBill = BillCalculator.calculateBill(totalUnits);
 
             String status = totalUnits > 200 ? "HIGH USAGE" : "Normal";
 
@@ -100,10 +91,8 @@ public class AdminController {
     @FXML
     private void handleExport() {
         try {
-            java.io.FileWriter fw =
-                new java.io.FileWriter("admin_report.txt", false);
-            java.io.BufferedWriter bw =
-                new java.io.BufferedWriter(fw);
+            java.io.FileWriter fw = new java.io.FileWriter("admin_report.txt", false);
+            java.io.BufferedWriter bw = new java.io.BufferedWriter(fw);
 
             bw.write("===== HOSTEL ELECTRICITY REPORT =====");
             bw.newLine();
@@ -111,18 +100,18 @@ public class AdminController {
             ArrayList<Student> all = loginManager.getAllStudents();
             for (int i = 0; i < all.size(); i++) {
                 Student s = all.get(i);
-                ArrayList<UsageLog> logs =
-                    FileHandler.loadUsageLogs(s.getUsername());
+                ArrayList<UsageLog> logs = FileHandler.loadUsageLogs(s.getUsername());
                 double units = BillCalculator.calculateTotalUnits(logs);
-                double bill  = BillCalculator.calculateBill(units);
+                double bill = BillCalculator.calculateBill(units);
 
                 bw.write("Name: " + s.getStudentName() +
-                         " | Room: " + s.getRoomNumber() +
-                         " | Units: " + units +
-                         " | Bill: Rs." + bill);
+                        " | Room: " + s.getRoomNumber() +
+                        " | Units: " + units +
+                        " | Bill: Rs." + bill);
                 bw.newLine();
             }
-            bw.close(); fw.close();
+            bw.close();
+            fw.close();
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setContentText("Report saved as admin_report.txt");
@@ -144,13 +133,14 @@ public class AdminController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/login.fxml")
+                        getClass().getResource("/login.fxml")
                 );
                 Parent root = loader.load();
                 Stage stage = (Stage) adminTable.getScene().getWindow();
                 Scene scene = new Scene(root, 420, 340);
+
                 scene.getStylesheets().add(
-                    getClass().getResource("/style.css").toExternalForm()
+                        getClass().getResource("/style.css").toExternalForm()
                 );
                 stage.setTitle("Hostel Electricity Tracker");
                 stage.setScene(scene);

@@ -1,7 +1,3 @@
-// LoginController.java
-// Handles all logic for the login screen
-// Concepts: @FXML annotation, event handling, loading new screens
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +9,6 @@ import javafx.stage.Stage;
 
 public class LoginController {
 
-    // @FXML links Java variable to the fx:id in the fxml file
     @FXML
     private TextField usernameField;
 
@@ -23,118 +18,140 @@ public class LoginController {
     @FXML
     private Label errorLabel;
 
-    // LoginManager from Week 2
     private LoginManager loginManager = new LoginManager();
-
-    // Count wrong attempts
     private int wrongAttempts = 0;
 
-    // This method is called when LOGIN button is clicked
-    // It is linked via onAction="#handleLogin" in the fxml
     @FXML
     private void handleLogin() {
-
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Empty field check
-        if (username.equals("") || password.equals("")) {
+        if (username.isEmpty() || password.isEmpty()) {
             showError("Please enter both username and password.");
             return;
         }
 
-        // Use LoginManager to check credentials
         String result = loginManager.login(username, password);
 
         if (result.equals("student")) {
 
-            Student loggedInStudent =
-                loginManager.getStudentByUsername(username);
+            Student loggedInStudent = loginManager.getStudentByUsername(username);
 
-            // Open student dashboard
-            openStudentDashboard(loggedInStudent);
+            if (loggedInStudent != null) {
+                openStudentDashboard(loggedInStudent);
+            } else {
+                showError("Student not found after login.");
+            }
 
         } else if (result.equals("admin")) {
 
-            Admin loggedInAdmin =
-                loginManager.getAdminByUsername(username);
+            Admin loggedInAdmin = loginManager.getAdminByUsername(username);
 
-            // Open admin dashboard
-            openAdminDashboard(loggedInAdmin);
+            if (loggedInAdmin != null) {
+                openAdminDashboard(loggedInAdmin);
+            } else {
+                showError("Admin not found after login.");
+            }
 
         } else {
-            wrongAttempts = wrongAttempts + 1;
+
+            wrongAttempts++;
 
             if (wrongAttempts >= 3) {
                 showError("Too many attempts. Closing app.");
                 javafx.application.Platform.exit();
             } else {
                 int remaining = 3 - wrongAttempts;
-                showError("Wrong credentials. " +
-                          remaining + " attempt(s) left.");
+                showError("Wrong credentials. " + remaining + " attempt(s) left.");
                 passwordField.clear();
             }
         }
     }
 
-    // Shows error message below the form
-    private void showError(String message) {
-        errorLabel.setText(message);
-        errorLabel.setVisible(true);
+    private void showError(String msg) {
+        errorLabel.setText(msg);
     }
 
-    // Opens student dashboard in the same window
+    // ✅ FIXED: correct FXML name
     private void openStudentDashboard(Student student) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/student_dashboard.fxml")
+                    getClass().getResource("/student_dashboard.fxml")
             );
+
+            if (loader.getLocation() == null) {
+                System.out.println("student_dashboard.fxml NOT FOUND");
+                return;
+            }
+
             Parent root = loader.load();
 
-            // Pass student data to the dashboard controller
             StudentController controller = loader.getController();
             controller.initData(student);
 
-            // Get current window and change the scene
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 900, 600);
-            scene.getStylesheets().add(
-                getClass().getResource("/style.css").toExternalForm()
-            );
-            stage.setTitle("Student Dashboard — " +
-                           student.getStudentName());
-            stage.setResizable(false);
+            Scene scene = new Scene(root, 600, 400);
             stage.setScene(scene);
+            stage.setTitle("Student Dashboard");
             stage.show();
 
         } catch (Exception e) {
-            showError("Error loading dashboard: " + e.getMessage());
+            System.out.println("Error loading student dashboard:");
+            e.printStackTrace();
         }
     }
 
-    // Opens admin dashboard in the same window
+    // ✅ FIXED: correct FXML name
     private void openAdminDashboard(Admin admin) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/admin_dashboard.fxml")
+                    getClass().getResource("/admin_dashboard.fxml")
             );
+
+            if (loader.getLocation() == null) {
+                System.out.println("admin_dashboard.fxml NOT FOUND");
+                return;
+            }
+
             Parent root = loader.load();
 
             AdminController controller = loader.getController();
             controller.initData(admin, loginManager);
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(root, 860, 560);
-            scene.getStylesheets().add(
-                getClass().getResource("/style.css").toExternalForm()
-            );
-            stage.setTitle("Admin Dashboard — " + admin.getAdminName());
-            stage.setResizable(false);
+            Scene scene = new Scene(root, 800, 500);
             stage.setScene(scene);
+            stage.setTitle("Admin Dashboard");
             stage.show();
 
         } catch (Exception e) {
-            showError("Error loading admin panel: " + e.getMessage());
+            System.out.println("Error loading admin dashboard:");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openSignup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/signup.fxml")
+            );
+
+            if (loader.getLocation() == null) {
+                System.out.println("signup.fxml NOT FOUND");
+                return;
+            }
+
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Sign Up");
+            stage.show();
+
+        } catch (Exception e) {
+            System.out.println("Error loading signup:");
+            e.printStackTrace();
         }
     }
 }

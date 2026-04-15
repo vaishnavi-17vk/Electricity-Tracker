@@ -1,7 +1,3 @@
-// UsageRowData.java
-// Simple data class for one row in the usage TableView
-// JavaFX TableView needs a class with getters matching column names
-
 public class UsageRowData {
 
     private String date;
@@ -9,16 +5,15 @@ public class UsageRowData {
     private String hours;
     private String units;
 
-    public UsageRowData(String date, String appliance,
-                        String hours, String units) {
-        this.date      = date;
+    public UsageRowData(String date, String appliance, String hours, String units) {
+        this.date = date;
         this.appliance = appliance;
-        this.hours     = hours;
-        this.units     = units;
+        this.hours = hours;
+        this.units = units;
     }
 
-    public String getDate()      { return date; }
+    public String getDate() { return date; }
     public String getAppliance() { return appliance; }
-    public String getHours()     { return hours; }
-    public String getUnits()     { return units; }
+    public String getHours() { return hours; }
+    public String getUnits() { return units; }
 }

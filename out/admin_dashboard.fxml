@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="AdminController">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox styleClass="admin-topbar" spacing="10">
+            <Label fx:id="adminTitleLabel"
+                   text="Admin Panel"
+                   styleClass="admin-title"/>
+            <Label text="  |  View all student usage and bills"
+                   styleClass="admin-sub"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN TABLE -->
+    <center>
+        <VBox styleClass="screen-container" spacing="14">
+            <Label text="All Students — Usage and Bill Summary"
+                   styleClass="section-title"/>
+
+            <TableView fx:id="adminTable"
+                       styleClass="data-table"
+                       VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colName"
+                                 text="Name"        prefWidth="160"/>
+                    <TableColumn fx:id="colRoom"
+                                 text="Room"        prefWidth="100"/>
+                    <TableColumn fx:id="colUser"
+                                 text="Username"    prefWidth="120"/>
+                    <TableColumn fx:id="colUnits"
+                                 text="Total Units" prefWidth="130"/>
+                    <TableColumn fx:id="colBill"
+                                 text="Bill (Rs.)"  prefWidth="120"/>
+                    <TableColumn fx:id="colStatus"
+                                 text="Status"      prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM BAR -->
+    <bottom>
+        <HBox styleClass="admin-bottombar" spacing="14">
+            <Button text="Export Report"
+                    onAction="#handleExport"
+                    styleClass="primary-btn"/>
+            <Button text="Refresh Data"
+                    onAction="#handleRefresh"
+                    styleClass="secondary-btn"/>
+            <Button text="Logout"
+                    onAction="#handleLogout"
+                    styleClass="secondary-btn"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

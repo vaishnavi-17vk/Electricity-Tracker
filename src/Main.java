@@ -8,36 +8,46 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.net.URL;
+
 public class Main extends Application {
 
-    // start() is called automatically by JavaFX when app launches
-    public void start(Stage primaryStage) throws Exception {
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Load FXML file safely
+            URL fxmlLocation = getClass().getResource("login.fxml");
 
-        // Load the login screen fxml file
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/login.fxml")
-        );
+            if (fxmlLocation == null) {
+                System.out.println("Error: login.fxml not found!");
+                return;
+            }
 
-        // Parent is the root node of the fxml layout
-        Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            Parent root = loader.load();
 
-        // Create a scene with the loaded layout
-        // 420 = width, 340 = height
-        Scene scene = new Scene(root, 420, 340);
+            Scene scene = new Scene(root, 420, 340);
 
-        // Load the CSS stylesheet
-        scene.getStylesheets().add(
-            getClass().getResource("/style.css").toExternalForm()
-        );
+            // Load CSS safely
+            URL cssLocation = getClass().getResource("style.css");
 
-        // Set window title
-        primaryStage.setTitle("Hostel Electricity Tracker");
-        primaryStage.setResizable(false);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            if (cssLocation != null) {
+                scene.getStylesheets().add(cssLocation.toExternalForm());
+            } else {
+                System.out.println("Warning: style.css not found!");
+            }
+
+            primaryStage.setTitle("Hostel Electricity Tracker");
+            primaryStage.setResizable(false);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        } catch (Exception e) {
+            System.out.println("Error starting application:");
+            e.printStackTrace(); // IMPORTANT for debugging
+        }
     }
 
-    // main() launches the JavaFX application
     public static void main(String[] args) {
         launch(args);
     }

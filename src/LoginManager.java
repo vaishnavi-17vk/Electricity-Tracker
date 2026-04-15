@@ -2,119 +2,106 @@
 // Handles login validation for both Student and Admin
 // Concepts: HashMap, ArrayList, if-else, for loop
 
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class LoginManager {
 
-    // HashMap stores username as KEY and password as VALUE
-    // Key   → "rahul123"
-    // Value → "pass123"
-    private HashMap<String, String> studentCredentials;
-    private HashMap<String, String> adminCredentials;
-
-    // We also keep the full Student objects so we can return them after login
     private ArrayList<Student> studentList;
-    private ArrayList<Admin>   adminList;
+    private ArrayList<Admin> adminList;
 
-    // Constructor — sets up default accounts
     public LoginManager() {
 
-        // Initialize all four collections
-        studentCredentials = new HashMap<String, String>();
-        adminCredentials   = new HashMap<String, String>();
-        studentList        = new ArrayList<Student>();
-        adminList          = new ArrayList<Admin>();
+        studentList = new ArrayList<>();
+        adminList = new ArrayList<>();
 
-        // Add some default students
-        addStudent(new Student("rahul123", "pass123",
-                               "Rahul Sharma", "Room 204", 101));
-        addStudent(new Student("priya456", "pass456",
-                               "Priya Patel", "Room 101", 102));
-        addStudent(new Student("amit789", "pass789",
-                               "Amit Kumar", "Room 305", 103));
+        // default users
+        studentList.add(new Student("rahul123", "pass123", "Rahul Sharma", "Room 204", 101));
+        studentList.add(new Student("priya456", "pass456", "Priya Patel", "Room 101", 102));
+        studentList.add(new Student("amit789", "pass789", "Amit Kumar", "Room 305", 103));
 
-        // Add default admin
-        addAdmin(new Admin("warden01", "admin999", "Mr. Patil"));
-    }
-
-    // Add a new student — stores in both HashMap and ArrayList
-    public void addStudent(Student student) {
-        // Store credentials in HashMap for fast lookup
-        studentCredentials.put(student.getUsername(), student.getPassword());
-        // Store full student object in ArrayList
-        studentList.add(student);
-    }
-
-    // Add a new admin
-    public void addAdmin(Admin admin) {
-        adminCredentials.put(admin.getUsername(), admin.getPassword());
-        adminList.add(admin);
+        adminList.add(new Admin("warden01", "admin999", "Mr. Patil"));
     }
 
     // -------------------------------------------------------
-    // LOGIN METHOD
-    // Returns "student", "admin", or "invalid"
+    // LOGIN (FILE BASED ONLY)
     // -------------------------------------------------------
     public String login(String username, String password) {
 
-        // Check if username exists in student credentials
-        // HashMap.containsKey() checks if the key exists
-        if (studentCredentials.containsKey(username)) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+            String line;
 
-            // Get the stored password for this username
-            String storedPassword = studentCredentials.get(username);
+            while ((line = br.readLine()) != null) {
 
-            // Check if passwords match
-            if (storedPassword.equals(password)) {
-                return "student"; // login successful as student
-            } else {
-                return "invalid"; // wrong password
+                String[] parts = line.split(",");
+
+                if (parts[0].equals(username) && parts[1].equals(password)) {
+                    br.close();
+                    return parts[2]; // role
+                }
             }
+
+            br.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        // Check if username exists in admin credentials
-        if (adminCredentials.containsKey(username)) {
-
-            String storedPassword = adminCredentials.get(username);
-
-            if (storedPassword.equals(password)) {
-                return "admin"; // login successful as admin
-            } else {
-                return "invalid"; // wrong password
-            }
-        }
-
-        // Username not found anywhere
         return "invalid";
     }
 
-    // Get the full Student object by username (after login)
+    // -------------------------------------------------------
+    // GET STUDENT OBJECT
+    // -------------------------------------------------------
     public Student getStudentByUsername(String username) {
 
-        // Loop through student list and find matching username
-        for (int i = 0; i < studentList.size(); i++) {
-            Student s = studentList.get(i);
+        // FIRST check file-based users
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("users.txt"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                String[] parts = line.split(",");
+
+                if (parts[0].equals(username) && parts[2].equals("student")) {
+                    br.close();
+                    return new Student(username, parts[1], username, "Unknown", 0);
+                }
+            }
+
+            br.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // fallback (default students)
+        for (Student s : studentList) {
             if (s.getUsername().equals(username)) {
-                return s; // found it — return this student
+                return s;
             }
         }
-        return null; // not found
+
+        return null;
     }
 
-    // Get the full Admin object by username (after login)
+    // -------------------------------------------------------
+    // GET ADMIN OBJECT
+    // -------------------------------------------------------
     public Admin getAdminByUsername(String username) {
 
-        for (int i = 0; i < adminList.size(); i++) {
-            Admin a = adminList.get(i);
+        for (Admin a : adminList) {
             if (a.getUsername().equals(username)) {
                 return a;
             }
         }
+
         return null;
     }
 
-    // Get all students (used by admin to see everyone)
     public ArrayList<Student> getAllStudents() {
         return studentList;
     }
